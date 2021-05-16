@@ -125,7 +125,7 @@ namespace shieldToTx
         void usage()
         {
             Console.WriteLine("");
-            Console.WriteLine("shieldToTx v1.1 - Convert TheShield (tm) OnLine Database to several CPS format");
+            Console.WriteLine("shieldToTx v1.1 - Convert TheShield (tm) OnLine Database to several CPS formats");
             Console.WriteLine("Copyright (c) 2021 Jean-Michel Cohen");
             Console.WriteLine("");
             Console.WriteLine("Usage: shieldToTx [0, 1] > filename.csv with 0 for Ailunce HD1 or 1 for AnyTone D868/878");            
