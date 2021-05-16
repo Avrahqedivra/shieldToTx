@@ -31,6 +31,9 @@ namespace shieldToTx
 
         String getDepartement(String depId)
         {
+            if (depId.StartsWith("97"))
+                return "DOM-TOM";
+
             for(int i=0; i < departements.Length; i++)
             {
                 if (departements[i].StartsWith(depId)) {
@@ -48,12 +51,12 @@ namespace shieldToTx
 
             if (type == 1)
             {
-                Console.WriteLine("No.,Radio ID, Callsign, Name, City, State, Country, Remarks, Call Type,Call Alert");
+                Console.WriteLine("No.,Radio ID,Callsign,Name,City,State,Country,Remarks,Call Type,Call Alert");
             }
 
             for (int i=0; i < lines.Length; i++)
             {
-                String[] user = lines[i].Split('-');
+                String[] user = lines[i].Split(',');
 
                 String shieldId = user[0];
                 String name = user[1];
@@ -95,6 +98,10 @@ namespace shieldToTx
 
                     case "BS":
                         country = "Belgium";
+                        break;
+
+                    case "CS":
+                        country = "Canada";
                         break;
 
                     case "HS":
