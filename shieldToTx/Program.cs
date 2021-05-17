@@ -26,16 +26,24 @@ namespace shieldToTx
 {
     class Program
     {
-        void parseContent(String content, int type)
+        enum TxType: int { HD1 = 0, D868, D878 };
+
+        char separator = ',';
+
+        void parseContent(String content, TxType type)
         {
             String[] lines = content.Split("\r\n");
 
             switch(type) { 
-                case 1:
+                case TxType.HD1:
                     Console.WriteLine("Radio ID,Callsign,Name,City,State,Country,Remarks");
                     break;
 
-                case 2:
+                case TxType.D868:
+                    Console.WriteLine("Radio ID,Callsign,Name,City,State,Country,Remarks");
+                    break;
+
+                case TxType.D878:
                     Console.WriteLine("Radio ID,Callsign,Name,City,State,Country,Remarks,Call Type,Call Alert");
                     break;
 
@@ -45,7 +53,7 @@ namespace shieldToTx
 
             for (int i=0; i < lines.Length; i++)
             {
-                String[] user = lines[i].Split(',');
+                String[] user = lines[i].Split(separator);
 
                 String shieldId = user[0];
                 String name = user[1];
@@ -104,15 +112,15 @@ namespace shieldToTx
 
                 switch(type)
                 {
-                    case 0: // ailucne HD1
+                    case TxType.HD1: // ailucne HD1
                         Console.WriteLine("Private Call," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + dmrId);
                         break;
 
-                    case 1: // AnyTone 868
+                    case TxType.D868: // AnyTone 868
                         Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + remarks);
                         break;
 
-                    case 2: // AnyTone 878
+                    case TxType.D878: // AnyTone 878
                         Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + remarks + ",Private Call,None");
                         break;
 
@@ -139,6 +147,7 @@ namespace shieldToTx
         {
             Program program = new Program();
 
+            // check if enough parameters (i.e TX type)
             if (args.Length < 1)
             {
                 program.usage();
@@ -167,7 +176,7 @@ namespace shieldToTx
             {
                 StreamReader reader = new StreamReader(stream);
                 String content = reader.ReadToEnd();
-                program.parseContent(content, Int16.Parse(args[0]));
+                program.parseContent(content, (TxType)Int16.Parse(args[0]));
             }
 
             System.Environment.Exit(0);
