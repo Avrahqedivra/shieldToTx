@@ -26,25 +26,6 @@ namespace shieldToTx
 {
     class Program
     {
-        String[] departements;
-
-
-        String getDepartement(String depId)
-        {
-            if (depId.StartsWith("97"))
-                return "DOM-TOM";
-
-            for(int i=0; i < departements.Length; i++)
-            {
-                if (departements[i].StartsWith(depId)) {
-                    String[] d = departements[i].Split(',');
-                    return StringExtensions.FoldToASCII(d[1]);
-                }
-            }
-
-            return "";
-        }
-
         void parseContent(String content, int type)
         {
             String[] lines = content.Split("\r\n");
@@ -93,7 +74,7 @@ namespace shieldToTx
                 {
                     case "FS":
                         country = "France";
-                        state = getDepartement(shieldId.Substring(2, 2));
+                        state = Departements.getDepartement(shieldId.Substring(2, 2));
                         break;
 
                     case "ES":
@@ -175,13 +156,6 @@ namespace shieldToTx
                     program.usage();
                     System.Environment.Exit(1);
                     break;
-            }
-
-            // Open the stream and read it back.
-            using (FileStream fs = File.Open("departements.csv", FileMode.Open))
-            {
-                StreamReader reader = new StreamReader(fs);
-                program.departements = reader.ReadToEnd().Split("\r\n");
             }
 
             String url = @"http://theshield.site/Liste_Shield.txt";
