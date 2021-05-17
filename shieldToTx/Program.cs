@@ -49,9 +49,17 @@ namespace shieldToTx
         {
             String[] lines = content.Split("\r\n");
 
-            if (type == 1)
-            {
-                Console.WriteLine("No.,Radio ID,Callsign,Name,City,State,Country,Remarks,Call Type,Call Alert");
+            switch(type) { 
+                case 1:
+                    Console.WriteLine("Radio ID,Callsign,Name,City,State,Country,Remarks");
+                    break;
+
+                case 2:
+                    Console.WriteLine("Radio ID,Callsign,Name,City,State,Country,Remarks,Call Type,Call Alert");
+                    break;
+
+                default:
+                    break;
             }
 
             for (int i=0; i < lines.Length; i++)
@@ -119,8 +127,12 @@ namespace shieldToTx
                         Console.WriteLine("Private Call," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + dmrId);
                         break;
 
-                    case 1: // AnyTone D678/878
-                        Console.WriteLine(i+1 + "," + dmrId + "," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + remarks + ",Private Call,None");
+                    case 1: // AnyTone 868
+                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + remarks);
+                        break;
+
+                    case 2: // AnyTone 878
+                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + remarks + ",Private Call,None");
                         break;
 
                     default:
@@ -135,7 +147,11 @@ namespace shieldToTx
             Console.WriteLine("shieldToTx v1.1 - Convert TheShield (tm) OnLine Database to several CPS formats");
             Console.WriteLine("Copyright (c) 2021 Jean-Michel Cohen");
             Console.WriteLine("");
-            Console.WriteLine("Usage: shieldToTx [0, 1] > filename.csv with 0 for Ailunce HD1 or 1 for AnyTone D868/878");            
+            Console.WriteLine("Usage: shieldToTx [0, 1, 2] > filename.csv");
+            Console.WriteLine("");
+            Console.WriteLine("with\t0 for Ailunce HD1");
+            Console.WriteLine("\t1 for AnyTone D868");
+            Console.WriteLine("\t2 for AnyTone D878");
         }
 
         static void Main(string[] args)
@@ -152,6 +168,7 @@ namespace shieldToTx
             {
                 case "0":
                 case "1":
+                case "2":
                     break;
 
                 default:
