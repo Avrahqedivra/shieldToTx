@@ -26,7 +26,7 @@ namespace shieldToTx
 {
     class Program
     {
-        enum TxType: int { HD1 = 0, D868, D878 };
+        enum TxType: int { HD1 = 0, D868, D878, GD77 };
 
         char separator = ',';
 
@@ -45,6 +45,10 @@ namespace shieldToTx
 
                 case TxType.D878:
                     Console.WriteLine("Radio ID,Callsign,Name,City,State,Country,Remarks,Call Type,Call Alert");
+                    break;
+
+                case TxType.GD77:
+                    Console.WriteLine("Number,Name,Call ID,Type,Ring Style,Call Receive Tone,Repeater Slot override");
                     break;
 
                 default:
@@ -124,6 +128,10 @@ namespace shieldToTx
                         Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + remarks + ",Private Call,None");
                         break;
 
+                    case TxType.GD77: // GD77
+                        Console.WriteLine(i + 1 + "," + shieldId + " " + name + "," + dmrId + "," + "Private Call" + "," + "On" + "," + "None" + "," + "None");
+                        break;
+
                     default:
                         break;
                 }                    
@@ -133,14 +141,15 @@ namespace shieldToTx
         void usage()
         {
             Console.WriteLine("");
-            Console.WriteLine("shieldToTx v1.1 - Convert TheShield (tm) OnLine Database to several CPS formats");
+            Console.WriteLine("shieldToTx v1.2 - Convert TheShield (tm) OnLine Database to several CPS formats");
             Console.WriteLine("Copyright (c) 2021 Jean-Michel Cohen");
             Console.WriteLine("");
-            Console.WriteLine("Usage: shieldToTx [0, 1, 2] > filename.csv");
+            Console.WriteLine("Usage: shieldToTx [0, 1, 2, 3] > filename.csv");
             Console.WriteLine("");
             Console.WriteLine("with\t0 for Ailunce HD1");
             Console.WriteLine("\t1 for AnyTone D868");
             Console.WriteLine("\t2 for AnyTone D878");
+            Console.WriteLine("\t3 for OpenGD77");
         }
 
         static void Main(string[] args)
@@ -159,6 +168,7 @@ namespace shieldToTx
                 case "0":
                 case "1":
                 case "2":
+                case "3":
                     break;
 
                 default:
