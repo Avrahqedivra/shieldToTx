@@ -26,7 +26,7 @@ namespace shieldToTx
 {
     class Program
     {
-        enum TxType: int { HD1 = 0, D868, D878, GD77 };
+        enum TxType: int { HD1 = 0, D868, D878, GD77, MD380 };
 
         char separator = ',';
 
@@ -49,6 +49,10 @@ namespace shieldToTx
 
                 case TxType.GD77:
                     Console.WriteLine("Number,Name,Call ID,Type,Ring Style,Call Receive Tone,Repeater Slot override");
+                    break;
+
+                case TxType.MD380:
+                    Console.WriteLine("Radio ID, Callsign, Name, NickName, City, State, Country,");
                     break;
 
                 default:
@@ -132,6 +136,10 @@ namespace shieldToTx
                         Console.WriteLine(i + 1 + "," + shieldId + " " + name + "," + dmrId + "," + "Private Call" + "," + "On" + "," + "None" + "," + "None");
                         break;
 
+                    case TxType.MD380:
+                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + "," + city + "," + state + "," + country + ",");
+                        break;
+
                     default:
                         break;
                 }                    
@@ -141,40 +149,41 @@ namespace shieldToTx
         void usage()
         {
             Console.WriteLine("");
-            Console.WriteLine("shieldToTx v1.2 - Convert TheShield (tm) OnLine Database to several CPS formats");
-            Console.WriteLine("Copyright (c) 2021 Jean-Michel Cohen");
+            Console.WriteLine(" shieldToTx v1.3 - Convert TheShield (tm) OnLine Database to several CPS formats");
+            Console.WriteLine(" Copyright (c) 2021 Jean-Michel Cohen");
             Console.WriteLine("");
-            Console.WriteLine("Usage: shieldToTx [0, 1, 2, 3] > filename.csv");
+            Console.WriteLine(" Usage : ");
             Console.WriteLine("");
-            Console.WriteLine("with\t0 for Ailunce HD1");
+            Console.WriteLine("  - to get this help");
+            Console.WriteLine("");
+            Console.WriteLine("\tshieldToTx");
+            Console.WriteLine("");
+            Console.WriteLine("  - to create file");
+            Console.WriteLine("");
+            Console.WriteLine("\tshieldToTx [0..4] > filename.csv");
+            Console.WriteLine("");
+            Console.WriteLine("  - to append to an existing file");
+            Console.WriteLine("");
+            Console.WriteLine("\tshieldToTx [0.."+ sizeof(TxType) + "] >> filename.csv\t(note: don't forget to remove the appended header line)");
+            Console.WriteLine("");
+            Console.WriteLine(" with\t0 for Ailunce HD1");
             Console.WriteLine("\t1 for AnyTone D868");
             Console.WriteLine("\t2 for AnyTone D878");
             Console.WriteLine("\t3 for OpenGD77");
+            Console.WriteLine("\t4 for MD380, MD390, MD2017, RT82");
         }
 
         static void Main(string[] args)
         {
+            int num = 0;
+
             Program program = new Program();
 
             // check if enough parameters (i.e TX type)
-            if (args.Length < 1)
+            if ((args.Length < 1) || !int.TryParse(args[0], out num) || (num > sizeof(TxType)))
             {
                 program.usage();
                 System.Environment.Exit(1);
-            }
-
-            switch(args[0])
-            {
-                case "0":
-                case "1":
-                case "2":
-                case "3":
-                    break;
-
-                default:
-                    program.usage();
-                    System.Environment.Exit(1);
-                    break;
             }
 
             String url = @"http://theshield.site/Liste_Shield.txt";
@@ -182,12 +191,18 @@ namespace shieldToTx
             WebClient client = new WebClient();
             
             Stream stream = client.OpenRead(url);
-            if (stream != null)
+            if (stream == null)
             {
-                StreamReader reader = new StreamReader(stream);
-                String content = reader.ReadToEnd();
-                program.parseContent(content, (TxType)Int16.Parse(args[0]));
+                Console.WriteLine("");
+                Console.WriteLine(" Cannot load contact file from TheShield");
+                Console.WriteLine(" Check your internet connection!");
+                Console.WriteLine("");
+                System.Environment.Exit(1);
             }
+
+            StreamReader reader = new StreamReader(stream);
+            String content = reader.ReadToEnd();
+            program.parseContent(content, (TxType)num);
 
             System.Environment.Exit(0);
         }
