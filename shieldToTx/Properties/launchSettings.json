@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "shieldToTx": {
+      "commandName": "Project",
+      "commandLineArgs": "-m 0"
+    }
+  }
+}
