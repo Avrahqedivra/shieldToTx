@@ -2,7 +2,7 @@
   "profiles": {
     "shieldToTx": {
       "commandName": "Project",
-      "commandLineArgs": "-m 0"
+      "commandLineArgs": "-c -nno_name 6"
     }
   }
 }

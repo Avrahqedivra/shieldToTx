@@ -3,6 +3,14 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyVersion>1.5.0.0</AssemblyVersion>
+    <FileVersion>1.5.0.0</FileVersion>
+    <Version>1.5.0</Version>
+    <Authors>Jean-Michel Cohen</Authors>
+    <Company />
+    <Description>Converts TheShield "http://theshield.site:8080/" contacts list to several CPS formats</Description>
+    <Copyright>Copyright (c) 2021 Jean-Michel Cohen</Copyright>
+    <PackageLicenseExpression>http://www.gnu.org/licenses/</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>

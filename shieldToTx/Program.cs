@@ -1,5 +1,5 @@
 ﻿/**
-    Copyright Header - A utility to generate csv files for several CPS
+    Copyright Header - A utility to generate csv contacts file for several CPS
     Copyright (C) 2021 Jean-Michel Cohen <jmc_96@hotmail.com>
     
     This file is part of Copyright Header.
@@ -29,11 +29,32 @@ namespace shieldToTx
 {
     class Program
     {
-        public enum TxType : int { HD1 = 0, D868, D878, GD77, MD380 };
+        enum TxType : int { HD1 = 0, D868, D878, GD77, MD380, RT73, DM1701, D578, LASTITEM };
 
         public List<string> options = new List<string>();
 
         char separator = ',';
+
+        string noname()
+        {
+            for (int i = 0; i < options.Count; i++)
+            {
+                if (options[i].Substring(0, 1) == "n")
+                    return options[i].Substring(1);
+            }
+
+            return "";
+        }
+        bool firstletter()
+        {
+            for (int i = 0; i < options.Count; i++)
+            {
+                if (options[i] == "c")
+                    return true;
+            }
+
+            return false;
+        }
 
         bool capitalize()
         {
@@ -45,7 +66,7 @@ namespace shieldToTx
 
             return false;
         }
-        public void parseContent(String content, TxType type)
+        void parseContent(String content, TxType type)
         {
             String[] lines = content.Split("\r\n");
 
@@ -66,15 +87,29 @@ namespace shieldToTx
                     Console.WriteLine("Number,Name,Call ID,Type,Ring Style,Call Receive Tone,Repeater Slot override");
                     break;
 
-                case TxType.MD380:
+                case TxType.MD380:  // and MD390, MD2017, RT82
                     Console.WriteLine("Radio ID, Callsign, Name, NickName, City, State, Country,");
+                    break;
+
+                case TxType.RT73: // and RT3S
+                    Console.WriteLine("Radio ID, Callsign, Name, NickName, City, State/Prov, Country");
+                    break;
+
+                case TxType.DM1701:
+                    Console.WriteLine("Radio ID,Callsign,Name,Nickname,City,State,Country,Remarks");
+                    break;
+
+                case TxType.D578:
+                    Console.WriteLine("No,Radio ID, Callsign, Name, City, State, Country, Remarks, Call Type,Call Alert");
                     break;
 
                 default:
                     break;
             }
 
-            bool capitalizeNames = capitalize();
+            bool    capitalizeNames = capitalize();
+            bool    firstLetter = firstletter();
+            String  noName = noname();
 
             for (int i = 0; i < lines.Length; i++)
             {
@@ -84,12 +119,25 @@ namespace shieldToTx
                 String name = user[1];
                 String dmrId = "";
 
+                if (name.Length == 0)
+                    name = noName;
+                if (firstLetter && name.Length > 0)
+                    name = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name.ToLower());
+
                 if (user.Length == 3) {
                     dmrId = user[2];
                 }
                 else
                 {
-                    name = user[1] + "-" + user[2];
+                    String user1 = user[1];
+                    String user2 = user[2];
+
+                    if (firstLetter && user1.Length > 0)
+                        user1 = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(user1.ToLower());
+                    if (firstLetter && user2.Length > 0)
+                        user2 = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(user2.ToLower());
+
+                    name = user1 + "-" + user2;
                     dmrId = user[3];
                 }
 
@@ -102,6 +150,7 @@ namespace shieldToTx
                 String state = "";
                 String country;
                 String remarks = "";
+                String nickName = "";
 
                 if (dmrId.Length > 7)
                     dmrId = dmrId.Substring(0, 7);     // remove any comment
@@ -114,7 +163,7 @@ namespace shieldToTx
                         break;
 
                     case "ES":
-                        country = "Spain";
+                        country = "Espagne";
                         break;
 
                     case "US":
@@ -122,7 +171,7 @@ namespace shieldToTx
                         break;
 
                     case "BS":
-                        country = "Belgium";
+                        country = "Belgique";
                         break;
 
                     case "CS":
@@ -130,12 +179,40 @@ namespace shieldToTx
                         break;
 
                     case "HS":
-                        country = "Swiss";
+                        country = "Suisse";
                         break;
 
                     default:
                         country = "";
                         break;
+                }
+
+                if (nickName.Length == 0)
+                    nickName = noName;
+                if (firstLetter && nickName.Length > 0)
+                    nickName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(nickName.ToLower());
+
+                if (city.Length == 0)
+                    city = noName;
+                if (firstLetter && city.Length > 0)
+                    city = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city.ToLower());
+
+                if (state.Length == 0)
+                    state = noName;
+                if (firstLetter && state.Length > 0)
+                    state = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(state.ToLower());
+
+                if (country.Length == 0)
+                    country = noName;
+                if (firstLetter && country.Length > 0)
+                    country = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(country.ToLower());
+
+                if (capitalizeNames)
+                {
+                    nickName = nickName.ToUpper();
+                    city = city.ToUpper();
+                    state = state.ToUpper();
+                    country = country.ToUpper();
                 }
 
                 switch (type)
@@ -157,7 +234,19 @@ namespace shieldToTx
                         break;
 
                     case TxType.MD380:
-                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + "," + city + "," + state + "," + country + ",");
+                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + nickName + "," + city + "," + state + "," + country + ",");
+                        break;
+
+                    case TxType.RT73:
+                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + nickName + "," + city + "," + state + "," + country);
+                        break;
+
+                    case TxType.DM1701:
+                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + nickName + "," + city + "," + state + "," + country + "," + remarks);
+                        break;
+
+                    case TxType.D578:
+                        Console.WriteLine("," + dmrId + "," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + remarks + ",Private Call,None");
                         break;
 
                     default:
@@ -170,7 +259,7 @@ namespace shieldToTx
         {
 #if FRENCH
             Console.WriteLine("");
-            Console.WriteLine(" shieldToTx v1.4 - Converti la base de données en ligne TheShield (tm) dans plusieurs formats de CPS");
+            Console.WriteLine(" shieldToTx v1.5 - Converti la base de données en ligne TheShield (tm) dans plusieurs formats de CPS");
             Console.WriteLine(" Copyright (c) 2021 Jean-Michel Cohen");
             Console.WriteLine("");
             Console.WriteLine(" Usage : ");
@@ -189,6 +278,10 @@ namespace shieldToTx
             Console.WriteLine("");
             Console.WriteLine("  - pour mettre le nom en majuscules ajouter l'option -m");
             Console.WriteLine("");
+            Console.WriteLine("  - pour mettre la première lettre du nom, ville, pays en majuscules ajouter l'option -c");
+            Console.WriteLine("");
+            Console.WriteLine("  - pour remplacer les champs vides ajouter l'option -nXXXXXX");
+            Console.WriteLine("");
             Console.WriteLine("\tshieldToTx -m [0.." + sizeof(TxType) + "] > nomdefichier.csv");
             Console.WriteLine("");
             Console.WriteLine(" avec\t0 pour Ailunce HD1");
@@ -196,9 +289,12 @@ namespace shieldToTx
             Console.WriteLine("\t2 pour AnyTone D878");
             Console.WriteLine("\t3 pour OpenGD77");
             Console.WriteLine("\t4 pour MD380, MD390, MD2017, RT82");
+            Console.WriteLine("\t5 pour RT73, RT3S");
+            Console.WriteLine("\t6 pour DM1701");
+            Console.WriteLine("\t7 pour D578");
 #else
             Console.WriteLine("");
-            Console.WriteLine(" shieldToTx v1.4 - Convert TheShield (tm) OnLine Database to several CPS formats");
+            Console.WriteLine(" shieldToTx v1.5 - Convert TheShield (tm) OnLine Database to several CPS formats");
             Console.WriteLine(" Copyright (c) 2021 Jean-Michel Cohen");
             Console.WriteLine("");
             Console.WriteLine(" Usage : ");
@@ -217,6 +313,10 @@ namespace shieldToTx
             Console.WriteLine("");
             Console.WriteLine("  - to capitalize the name add option -m");
             Console.WriteLine("");
+            Console.WriteLine("  - to uppercase the first letter of name, city, country add option -c");
+            Console.WriteLine("");
+            Console.WriteLine("  - to replace empty fields add option -nXXXXXX");
+            Console.WriteLine("");
             Console.WriteLine("\tshieldToTx -m [0.." + sizeof(TxType) + "] > filename.csv");
             Console.WriteLine("");
             Console.WriteLine(" with\t0 for Ailunce HD1");
@@ -224,6 +324,9 @@ namespace shieldToTx
             Console.WriteLine("\t2 for AnyTone D878");
             Console.WriteLine("\t3 for OpenGD77");
             Console.WriteLine("\t4 for MD380, MD390, MD2017, RT82");
+            Console.WriteLine("\t5 for RT73, RT3S");
+            Console.WriteLine("\t6 for DM1701");
+            Console.WriteLine("\t7 for D578");
 #endif
         }
 
@@ -246,14 +349,23 @@ namespace shieldToTx
                 // check for options
                 if (option.StartsWith("-"))
                 {
-                    option = option.Substring(1);
-                    if (option.Length == 1)
+                    if (option.Length >= 1)
                     {
-                        switch (option)
+                        switch (option.Substring(1, 1))
                         {
                             case "m":   // Capitalize string
                             case "c":   // Capitalize first char
-                                program.options.Add(option);
+                                program.options.Add(option.Substring(1));
+                                break;
+
+                            case "n":   // noname XXX
+                                if (option.Substring(1).Length > 1)
+                                    program.options.Add(option.Substring(1));
+                                else
+                                {
+                                    program.usage();
+                                    System.Environment.Exit(1);
+                                }
                                 break;
 
                             default:
@@ -271,7 +383,7 @@ namespace shieldToTx
                 }
                 else
                 {
-                    if (!int.TryParse(option, out num) || (num > sizeof(Program.TxType)))
+                    if (!int.TryParse(option, out num) || (num > (int)Program.TxType.LASTITEM))
                     {
                         program.usage();
                         System.Environment.Exit(1);
@@ -297,6 +409,8 @@ namespace shieldToTx
                 Console.WriteLine("");
                 System.Environment.Exit(1);
             }
+
+            Console.WriteLine("");
 
             StreamReader reader = new StreamReader(stream);
             String content = reader.ReadToEnd();
