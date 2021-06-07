@@ -270,28 +270,28 @@ namespace shieldToTx
             Console.WriteLine("");
             Console.WriteLine("  - pour créer un fichier");
             Console.WriteLine("");
-            Console.WriteLine("\tshieldToTx [0..4] > nomdefichier.csv");
+            Console.WriteLine("\tshieldToTx [0..{0}] {1}",  (int)Program.TxType.LASTITEM-1, " > nomdefichier.csv");
             Console.WriteLine("");
             Console.WriteLine("  - pour concaténer à un fichier existant");
             Console.WriteLine("");
-            Console.WriteLine("\tshieldToTx [0.." + sizeof(TxType) + "] >> nomdefichier.csv\t(note: ne pas oublier, s'il y a lieu, de supprimer la ligne d'entête de l'ajout)");
+            Console.WriteLine("\tshieldToTx [0..{0}] {1}", (int)Program.TxType.LASTITEM - 1, " >> nomdefichier.csv\t(note: ne pas oublier, s'il y a lieu, de supprimer la ligne d'entête de l'ajout)");
             Console.WriteLine("");
             Console.WriteLine("  - pour mettre le nom en majuscules ajouter l'option -m");
             Console.WriteLine("");
-            Console.WriteLine("  - pour mettre la première lettre du nom, ville, pays en majuscules ajouter l'option -c");
+            Console.WriteLine("  - pour mettre la première lettre du nom, ville, pays en majuscule ajouter l'option -c");
             Console.WriteLine("");
-            Console.WriteLine("  - pour remplacer les champs vides ajouter l'option -nXXXXXX");
+            Console.WriteLine("  - pour remplacer les champs vides par XXXX ajouter l'option -nXXXX");
             Console.WriteLine("");
-            Console.WriteLine("\tshieldToTx -m [0.." + sizeof(TxType) + "] > nomdefichier.csv");
+            Console.WriteLine("\tshieldToTx -m -nXXXX -c [0..{0}] {1}", (int)Program.TxType.LASTITEM - 1, " > nomdefichier.csv");
             Console.WriteLine("");
             Console.WriteLine(" avec\t0 pour Ailunce HD1");
             Console.WriteLine("\t1 pour AnyTone D868");
             Console.WriteLine("\t2 pour AnyTone D878");
-            Console.WriteLine("\t3 pour OpenGD77");
-            Console.WriteLine("\t4 pour MD380, MD390, MD2017, RT82");
-            Console.WriteLine("\t5 pour RT73, RT3S");
-            Console.WriteLine("\t6 pour DM1701");
-            Console.WriteLine("\t7 pour D578");
+            Console.WriteLine("\t3 pour Radioddity OpenGD77");
+            Console.WriteLine("\t4 pour Tytera MD380, MD390, MD2017, Retevis RT82");
+            Console.WriteLine("\t5 pour Retevis RT73, RT3S");
+            Console.WriteLine("\t6 BaoFeng pour DM1701");
+            Console.WriteLine("\t7 pour AnyTone D578");
 #else
             Console.WriteLine("");
             Console.WriteLine(" shieldToTx v1.5 - Convert TheShield (tm) OnLine Database to several CPS formats");
@@ -305,28 +305,28 @@ namespace shieldToTx
             Console.WriteLine("");
             Console.WriteLine("  - to create file");
             Console.WriteLine("");
-            Console.WriteLine("\tshieldToTx [0..4] > filename.csv");
+            Console.WriteLine("\tshieldToTx [0..{0}] {1}",  (int)Program.TxType.LASTITEM-1, " > filename.csv");
             Console.WriteLine("");
             Console.WriteLine("  - to append to an existing file");
             Console.WriteLine("");
-            Console.WriteLine("\tshieldToTx [0.."+ sizeof(TxType) + "] >> filename.csv\t(note: don't forget to remove the appended header line)");
+            Console.WriteLine("\tshieldToTx [0..{0}] {1}",  (int)Program.TxType.LASTITEM-1, " >> filename.csv\t(note: don't forget to remove the appended header line)");
             Console.WriteLine("");
             Console.WriteLine("  - to capitalize the name add option -m");
             Console.WriteLine("");
             Console.WriteLine("  - to uppercase the first letter of name, city, country add option -c");
             Console.WriteLine("");
-            Console.WriteLine("  - to replace empty fields add option -nXXXXXX");
+            Console.WriteLine("  - to replace empty fields by XXXX add option -nXXXX");
             Console.WriteLine("");
-            Console.WriteLine("\tshieldToTx -m [0.." + sizeof(TxType) + "] > filename.csv");
+            Console.WriteLine("\tshieldToTx -m [0..{0}] {1}",  (int)Program.TxType.LASTITEM-1, " > filename.csv");
             Console.WriteLine("");
             Console.WriteLine(" with\t0 for Ailunce HD1");
             Console.WriteLine("\t1 for AnyTone D868");
             Console.WriteLine("\t2 for AnyTone D878");
-            Console.WriteLine("\t3 for OpenGD77");
-            Console.WriteLine("\t4 for MD380, MD390, MD2017, RT82");
-            Console.WriteLine("\t5 for RT73, RT3S");
-            Console.WriteLine("\t6 for DM1701");
-            Console.WriteLine("\t7 for D578");
+            Console.WriteLine("\t3 for Radioddity OpenGD77");
+            Console.WriteLine("\t4 for Tytera MD380, MD390, MD2017, Retevis RT82");
+            Console.WriteLine("\t5 for Retevis RT73, RT3S");
+            Console.WriteLine("\t6 for BaoFeng DM1701");
+            Console.WriteLine("\t7 for AnyTone D578");
 #endif
         }
 
@@ -383,7 +383,7 @@ namespace shieldToTx
                 }
                 else
                 {
-                    if (!int.TryParse(option, out num) || (num > (int)Program.TxType.LASTITEM))
+                    if (!int.TryParse(option, out num) || (num > (int)Program.TxType.LASTITEM-1))
                     {
                         program.usage();
                         System.Environment.Exit(1);
