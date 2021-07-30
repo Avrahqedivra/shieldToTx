@@ -72,7 +72,7 @@ namespace shieldToTx
 
             switch (type) {
                 case TxType.HD1:
-                    Console.WriteLine("Radio ID,Callsign,Name,City,State,Country,Remarks");
+                    // Console.WriteLine("Call Type,Contacts Alias,City,Province,Country,Call ID,");
                     break;
 
                 case TxType.D868:
@@ -218,11 +218,11 @@ namespace shieldToTx
                 switch (type)
                 {
                     case TxType.HD1: // ailucne HD1
-                        Console.WriteLine("Private Call," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + dmrId);
+                        Console.WriteLine("Private Call," + shieldId + " " + name + "," + city + "," + state + "," + country + "," + dmrId);
                         break;
 
                     case TxType.D868: // AnyTone 868
-                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + city + "," + state + "," + country + "," + remarks);
+                        Console.WriteLine(dmrId + "," + shieldId + "," + name + "," + city + "-" + state + "," + country + "," + remarks);
                         break;
 
                     case TxType.D878: // AnyTone 878
@@ -259,7 +259,7 @@ namespace shieldToTx
         {
 #if FRENCH
             Console.WriteLine("");
-            Console.WriteLine(" shieldToTx v1.5 - Converti la base de données en ligne TheShield (tm) dans plusieurs formats de CPS");
+            Console.WriteLine(" shieldToTx v1.6 - Converti la base de données en ligne TheShield (tm) dans plusieurs formats de CPS");
             Console.WriteLine(" Copyright (c) 2021 Jean-Michel Cohen");
             Console.WriteLine("");
             Console.WriteLine(" Usage : ");
@@ -294,7 +294,7 @@ namespace shieldToTx
             Console.WriteLine("\t7 pour AnyTone D578");
 #else
             Console.WriteLine("");
-            Console.WriteLine(" shieldToTx v1.5 - Convert TheShield (tm) OnLine Database to several CPS formats");
+            Console.WriteLine(" shieldToTx v1.6 - Convert TheShield (tm) OnLine Database to several CPS formats");
             Console.WriteLine(" Copyright (c) 2021 Jean-Michel Cohen");
             Console.WriteLine("");
             Console.WriteLine(" Usage : ");
